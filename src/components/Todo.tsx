@@ -3,13 +3,30 @@ import Card from 'react-bootstrap/Card';
 import 'bootstrap/dist/css/bootstrap.css';
 
 
-interface data{
-    //task: string;
+interface TodoProps{
+    id: number;
+    task: string;
+    completed: boolean;
+    toggleTodo(id:number):void;
 }
 
-const Todo: React.FC<data>=(props) => {
+const Todo: React.FC<TodoProps> = ({id,task,toggleTodo}) =>{
+    const todoId:string=`${id}`;
 
-    return <Card style={{marginBottom:10}}><Card.Body><input type={"checkbox"}></input> This is some text within a card body.</Card.Body></Card>
-  }
+    const handleCheck= () => {
+        toggleTodo(id);
+    };
+
+
+    return(
+        <Card style={{marginBottom:10}}>
+            <Card.Body>
+                <input id={todoId} style={{marginRight:5}} type={"checkbox"} onChange={handleCheck}></input>
+                {task}
+            </Card.Body>
+        </Card>
+    );
+} 
+  
   
   export default Todo;
