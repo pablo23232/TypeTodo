@@ -75,6 +75,10 @@ const Todo: React.FC<TodoProps> = ({id,task,toggleTodo,toggleModification,toggle
     };
 
     const handleClickPri=() =>{
+        if(document.getElementsByClassName("")){
+            document.getElementById("priority"+todoId)?.classList.add("normal");
+            priority="normal"
+        }
         if(priority==="normal"){
             document.getElementById("priority"+todoId)?.classList.remove("normal");
             document.getElementById("priority"+todoId)?.classList.add("moderada");
@@ -95,16 +99,16 @@ const Todo: React.FC<TodoProps> = ({id,task,toggleTodo,toggleModification,toggle
         <Card style={{marginBottom:10}}>
             <Card.Body className="d-flex justify-content-between">
                 <div style={{display:"flex"}}>
-                    <input id={todoId} className="check" style={{marginRight:10}} type={"checkbox"} onChange={handleCheck} checked={completed} ></input>
+                    <input data-testid="check" id={todoId} className="check" style={{marginRight:10}} type={"checkbox"} onChange={handleCheck} checked={completed} ></input>
                     <p id={"task"+todoId} style={{margin:0}}>{task}</p>
                 </div>
                 <div style={{display:"flex",alignSelf:"center"}}>
-                    <div id={"priority"+todoId} style={{width:30,height:17}} className={priority}></div>
-                    <FontAwesomeIcon className={todoId} icon={faArrowDownShortWide} style={{marginLeft:10, color:"grey"}} onClick={handleClickPri} 
+                    <div data-testid="priorityBox" id={"priority"+todoId} style={{width:30,height:17}} className={priority}></div>
+                    <FontAwesomeIcon data-testid="priority" className={todoId} icon={faArrowDownShortWide} style={{marginLeft:10, color:"grey"}} onClick={handleClickPri} 
                     onKeyDown={handleKeyPri} tabIndex={0}/>
-                    <FontAwesomeIcon className={todoId} icon={faPenToSquare} style={{marginLeft:10, color:"grey"}} onClick={handleClick} 
+                    <FontAwesomeIcon data-testid="modify" className={todoId} icon={faPenToSquare} style={{marginLeft:10, color:"grey"}} onClick={handleClick} 
                     tabIndex={0} onKeyDown={handleKeyMod} />
-                    <FontAwesomeIcon className={todoId} icon={faTrashCan} style={{marginLeft:10, color:"grey"}} onClick={handleClickDel} 
+                    <FontAwesomeIcon data-testid="delete" className={todoId} icon={faTrashCan} style={{marginLeft:10, color:"grey"}} onClick={handleClickDel} 
                     tabIndex={0} onKeyDown={handleKeyDel}/>
                 </div>
             </Card.Body>

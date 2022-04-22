@@ -1,4 +1,4 @@
-import React,{FC,useState} from "react";
+import React,{FC} from "react";
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl'
 import 'bootstrap/dist/css/bootstrap.css';
@@ -20,7 +20,8 @@ const Input: FC<InputProps> = ({onChange,onKeyPress,texto}) => {
         <div style={{width:500}}>
             <InputGroup className="mb-3">
             <InputGroup.Text id="inputGroup-sizing-default">Nueva tarea</InputGroup.Text>
-            <FormControl 
+            <FormControl
+            data-testid="input"
             onKeyDown={onKeyPress}
             onChange={(event: any) => setValue(event.target.value)}
             aria-label="Default"

@@ -1,17 +1,22 @@
 import React, {useState} from "react";
 import { useEffect } from "react";
-import Input from "./components/Input"
-import TodoList, { Todo } from "./components/TodoList";
-import APIService from "./services/APIService";
-import Popup from "./components/Popup"
+import Input from "../components/Input"
+import TodoList, { Todo } from "../components/TodoList";
+import APIService from "../services/APIService";
+import Popup from "../components/Popup"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus} from "@fortawesome/free-solid-svg-icons";
+import {useAppSelector,useAppDispatch} from '../hooks';
+import {addTodo,deleteTodo,modifyTodo} from '../features/todosSlice'
 
 let id:number=0;
 
 const TODO_END_POINT = "/todos"
 
 const App : React.FC = () => {
+
+    const count = useAppSelector(state => state.todos.todos)
+    const dispatch = useAppDispatch()
 
     let updateTodo:Todo;
 
@@ -45,7 +50,7 @@ const App : React.FC = () => {
                 const response:any = await getTodos();
                 setTodos(response.data);
             } catch (error) {
-            console.log(error)
+                console.log(error)
             }
         }
         asyncFunction();
@@ -56,12 +61,13 @@ const App : React.FC = () => {
            try {
                const response:any = await getTodos();
                setTodos(response.data);
+               dispatch(addTodo(response.data));
            } catch (error) {
            console.log(error)
            }
        }
        asyncFunction();
-   }, [boolAdd])
+    }, [boolAdd])
 
     function handleChange(inputvalue:string){
         setTexto(inputvalue);
@@ -83,6 +89,7 @@ const App : React.FC = () => {
             setTodos(newArr);
             updateTodo=newElement;
             putTodos(newElement.id,updateTodo);
+            dispatch(modifyTodo(newArr[index]))
             setTexto("");
             editPopup();
         }
@@ -91,6 +98,7 @@ const App : React.FC = () => {
         }
         
     }
+
     function toggleTodo(id:number):void{
         const newTodos = [...todos];
         const todo:Todo= newTodos.find((todo)=> todo.id ===id)!;
@@ -124,6 +132,7 @@ const App : React.FC = () => {
         newTodos[index].priority=todo.priority;
         updateTodo=newTodos[index];
         setTodos(newTodos);
+        dispatch(modifyTodo(newTodos[index]))
         putTodos(newTodos[index].id,updateTodo);
     }
 
@@ -153,7 +162,13 @@ const App : React.FC = () => {
         if(repeate===undefined && texto!==""){
             const newElement ={id:id,task:texto,priority:priority,completed:false};
             setTodos([...todos, newElement]);
-            postTodos(newElement);
+            dispatch(addTodo(newElement));
+            try{
+                postTodos(newElement);
+            }
+            catch(err){
+                console.log(err)
+            }
             setboolAdd(!boolAdd);
             setTexto("");
         }
@@ -163,12 +178,19 @@ const App : React.FC = () => {
         if(texto===""){
             alert("No se pueden introducir tareas vacias")
         }
+        
     };
     
     function buttonDel():void{
         const newArr = [...todos].filter((todos) => todos.id !==todoID);;
         setTodos(newArr);
-        deleteTodos(todoID);
+        try{
+            deleteTodos(todoID);
+            dispatch(deleteTodo(todoID));
+        }
+        catch(err){
+            console.log(err)
+        }
         deletePopup();
     }
 
@@ -178,8 +200,8 @@ const App : React.FC = () => {
                 <Input onChange={handleChange} onKeyPress={onKeyPress} texto={texto}/>
                 <TodoList todos={todos} toggleTodo={toggleTodo} toggleModification={toggleModification} toggleDelete={toggleDelete} 
                 togglePriority={togglePriority}/>
-                <div style={{display:"flex",flexDirection:"row",gap:10,marginTop:5}}>
-                    <FontAwesomeIcon icon={faCirclePlus} style={{color:"rgb(0, 94, 201)",height:50,width:50}} onClick={buttonAdd} tabIndex={0} onKeyPress={onKeyPress} />
+                <div  style={{display:"flex",flexDirection:"row",gap:10,marginTop:5}}>
+                    <FontAwesomeIcon data-testid="add" icon={faCirclePlus} style={{color:"rgb(0, 94, 201)",height:50,width:50}} onClick={buttonAdd} tabIndex={0} onKeyPress={onKeyPress} />
                 </div>
             </div>
             {show === true ?

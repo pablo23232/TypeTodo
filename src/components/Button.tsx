@@ -9,6 +9,6 @@ interface ButtonProps{
   onClick?: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({color,text,onClick}) => <ButtonBoost variant={color} onClick={onClick}>{text}</ButtonBoost>
+const Button: React.FC<ButtonProps> = ({color,text,onClick}) => <ButtonBoost data-testid={text} variant={color} onClick={onClick}>{text}</ButtonBoost>
 
 export default Button;
